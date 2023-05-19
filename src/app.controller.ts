@@ -10,11 +10,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('page')
-  getPage(): any {
+  @Get('product')
+  getProduct(): any {
     return {
       title: 'home page',
-      content: 'this is main page'
+      content: 'this is main page',
     };
   }
 }

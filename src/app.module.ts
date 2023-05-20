@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
-import { ProductController } from './product/product.controller';
-import { ProductService } from './product/product.service';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -21,8 +20,9 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
       autoLoadEntities: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
+    ProductModule,
   ],
-  controllers: [AppController, ProductController],
-  providers: [AppService, ProductService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

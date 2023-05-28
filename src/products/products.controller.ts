@@ -1,9 +1,9 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ProductService } from './product.service';
+import { ProductsService } from './products.service';
 
 @Controller('product')
-export class ProductController {
-  constructor(private readonly service: ProductService) {}
+export class ProductsController {
+  constructor(private readonly service: ProductsService) {}
 
   @Get()
   getAllParoduct(): any {

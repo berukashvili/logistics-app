@@ -2,27 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { ProductsInterface } from './products.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProductsEntity } from './entity/products.entity';
+import { Conditions, ProductsEntity } from './entity/products.entity';
 
 @Injectable()
 export class ProductsService {
-  private readonly products: ProductsInterface[] = [
-    {
-      id: 1,
-      name: 'Buy Products',
-      type: 'გასაყიდი პროდუქტები',
-    },
-    {
-      id: 2,
-      name: 'Sales Products',
-      type: 'გასაყიდი პროდუქტები აქციით',
-    },
-  ];
+  private readonly products: ProductsInterface[] = [];
 
   constructor(
     @InjectRepository(ProductsEntity)
     private readonly productRepository: Repository<ProductsEntity>,
   ) {}
+
+  async findByCondition(condition: Conditions): Promise<ProductsEntity[]> {
+    return this.productRepository.findBy({ condition });
+  }
 
   public async findAllProducts(): Promise<ProductsEntity[]> {
     return await this.productRepository.find();

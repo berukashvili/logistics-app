@@ -6,6 +6,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
+import { ProductsSaleModule } from './products/products_sale/products_sale.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ReportsModule } from './reports/reports.module';
       namingStrategy: new SnakeNamingStrategy(),
     }),
     ProductsModule,
+    ProductsSaleModule,
     UsersModule,
     ReportsModule,
   ],

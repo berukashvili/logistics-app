@@ -2,26 +2,60 @@ import { Injectable } from '@nestjs/common';
 import { ProductsInterface } from './products.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Conditions, ProductsEntity } from './entity/products.entity';
+import { Product } from './entity/products.entity';
+import { Status } from './entity/status.entity';
 
 @Injectable()
 export class ProductsService {
   private readonly products: ProductsInterface[] = [];
 
   constructor(
-    @InjectRepository(ProductsEntity)
-    private readonly productRepository: Repository<ProductsEntity>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(Status)
+    private statusRepository: Repository<Status>,
   ) {}
 
-  async findByCondition(condition: Conditions): Promise<ProductsEntity[]> {
-    return this.productRepository.findBy({ condition });
+  async updateProductStatus(
+    productId: number,
+    newStatus: string,
+  ): Promise<Product> {
+    const product = await this.productRepository.findOneOrFail({
+      where: { id: productId },
+    });
+    product.status = newStatus;
+
+    // Save the updated product status
+    await this.productRepository.save(product);
+
+    // Update the corresponding status count
+    await this.updateStatusCount(newStatus);
+
+    return product;
   }
 
-  public async findAllProducts(): Promise<ProductsEntity[]> {
+  private async updateStatusCount(status: string): Promise<void> {
+    const existingStatus = await this.statusRepository.findOne({
+      where: { name: status },
+    });
+
+    if (existingStatus) {
+      existingStatus.count++;
+      await this.statusRepository.save(existingStatus);
+    } else {
+      const newStatus = this.statusRepository.create({
+        name: status,
+        count: 1,
+      });
+      await this.statusRepository.save(newStatus);
+    }
+  }
+
+  public async findAllProducts(): Promise<Product[]> {
     return await this.productRepository.find();
   }
 
-  public async findProductById(id: number): Promise<ProductsEntity> {
+  public async findProductById(id: number): Promise<Product> {
     return await this.productRepository.findOne({
       where: {
         id: id,

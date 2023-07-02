@@ -1,15 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
-export enum Conditions {
-  DEFAULT = 'default',
-  SALE = 'sale',
-  RETURNED = 'returned',
-  CANCELLED = 'cancelled',
-  CORRECTED = 'corrected',
-}
-
-@Entity('product')
-export class ProductsEntity {
+@Entity()
+export class Product {
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -27,10 +25,17 @@ export class ProductsEntity {
 
   @Column({
     type: 'enum',
-    enum: Conditions,
-    default: Conditions.DEFAULT,
+    enum: [
+      'default',
+      'purchased',
+      'sold',
+      'corrected',
+      'returned',
+      'cancelled',
+    ],
+    default: 'default',
   })
-  condition: Conditions;
+  status: string;
 
   @Column('decimal')
   public price: number;
